@@ -1,0 +1,61 @@
+======================================================
+SPI DTS Configuration
+======================================================
+1. SPI DTS configuration example:-
+
+a.DT configuration (STM32 level)
+At device level, each SPI controller is declared as follows:
+
+spi1: spi@44004000 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	compatible = "st,stm32h7-spi";
+	reg = <0x44004000 0x400>;
+	interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+	clocks = <&rcc SPI1_K>;
+	resets = <&rcc SPI1_R>;
+	dmas = <&dmamux1 37 0x400 0x05>,
+	       <&dmamux1 38 0x400 0x05>;
+	dma-names = "rx", "tx";
+	power-domains = <&pd_core>;
+	status = "disabled";
+};
+
+b. DT configuration (board level)
+&spi1 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&spi1_pins_a>;
+	pinctrl-1 = <&spi1_sleep_pins_a>;
+	status = "okay";
+
+        foo@0 {
+                compatible = "spi-foo";
+                reg = <0>; /* CS #0 */
+                spi-max-frequency = <10000000>;
+        };
+ };
+ 
+ There are two levels of configuration:
+
+Configuration of the SPI bus properties:
+----------------------------------------------
+pinctrl-0&1 
+configuration depends on hardware board configuration and on how the SPI devices are
+connected to MOSI, MISO and Clk pins.
+
+cs-gpios
+represents the list of GPIOs used as chip selects. This property is optional.
+
+dmas: by default, DMAs are specified for all SPI instances. This is up to the user 
+to remove them if they are not needed. /delete-property/ is used to remove DMA usage for SPI. 
+Both /delete-property/dma-names and /delete-property/dma have to be inserted to get rid of DMAs.
+
+Configuration of the properties of the SPI device connected on the bus:
+------------------------------------------------------------------------
+compatible -
+represents the name of the SPI device driver.
+reg -
+represents the index of the gpio chip select associated to this SPI device.
+spi-max-frequency -
+represents the maximum SPI clocking speed for the device (in Hz).
+
