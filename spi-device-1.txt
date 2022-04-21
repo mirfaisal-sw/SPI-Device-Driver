@@ -1,0 +1,16 @@
+SPI device concepts: -
+=======================
+
+1. In Linux SPI device is detected as "spidevB.C".
+   Here B means Bus number and C means Chip select nummber.
+   
+   If suppose a SOC has spi module spi0 and it has two chip 
+   select line spi0_cs0 and spi0_cs1.
+   
+   If SPI device is connected at spi0_cs0, then Linux will treat
+   this with name "spi1.0".
+   Bus number = SPI module number of H/w + 1.
+   
+   TODO:
+   Add few points after looking tera term 
+ 
