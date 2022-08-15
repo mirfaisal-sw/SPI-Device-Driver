@@ -1,0 +1,25 @@
+
+1. Registering "spidev" driver to any SPI client or SPI slave device using DTS.
+   -----------------------------------------------------------------------------
+	Example - arch/arm/boot/dts/mir-am335x.dts
+	
+	&spi1 {
+	
+		status = "okay";
+		pinctrl-names = "default";
+		
+#ifdef SPIDEV_DRIVER
+		spidev0: spi@0 {
+			compatibe = "spidev";
+			reg = <0>;
+			spi-max-frequency = <1500000>;
+		};
+		
+#else
+		spi_flash@0 {
+			comatible = "mir, mirflash";
+			spi-max-frequency = <1000000>;
+			reg = <0>;
+		};
+	};
+		
